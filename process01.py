@@ -1,26 +1,19 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.feature_selection import SelectKBest, f_classif
 
-# 1. 데이터 준비
-dataset = pd.read_csv("online_shoppers_intention.csv", encoding='utf-8')
 
-# 데이터 확인
+online_shoppers_intention = pd.read_csv('online_shoppers_intention.csv')
+dataset = online_shoppers_intention
 print(dataset.shape)
-print(dataset.info())
-print(dataset.describe())
 
-# 데이터 나누기
-# X = dataset.iloc[:, :-1]
-# y = dataset.iloc[:, -1:]
-# print('X[5] =', X[:5])
-# print('y[5] =', y[:5])
-
-# 결측치 확인
-print(dataset.isnull().sum())
-
-# 2. 데이터 전처리
+X = dataset.iloc[:, :-1]
+y = dataset.iloc[:, -1:]
+print('X[5] =', X[:5])
+print('y[5] =', y[:5])
 
 # 문자형 데이터 -> 숫자형으로 변환
+print(dataset.info())
 # Python2 (11) - scratch12 나이브 베이즈(p9)
 
 month = set(dataset.loc[:, 'Month'])
@@ -43,12 +36,17 @@ print(dataset.loc[:, 'Month'])
 visitor_type = set(dataset.loc[:, 'VisitorType'])
 print(visitor_type)
 # {'Returning_Visitor', 'Other', 'New_Visitor'}
-dataset.loc[dataset['VisitorType'] == 'Returning_Visitor', 'VisitorType'] == 0
+dataset.loc[dataset['VisitorType'] == 'Returning_Visitor', 'VisitorType'] = 0
+dataset.loc[dataset['VisitorType'] == 'New_Visitor', 'VisitorType'] = 1
+dataset.loc[dataset['VisitorType'] == 'Other', 'VisitorType'] = 2
+print(dataset.loc[:, 'VisitorType'])
 
-# 변수 의미 파악
-# 영향력 있는 변수 selecting -> sklearn.feature_selection.SelectBest
 
+# selector = SelectKBest(f_classif, k=10)
 
+# 히트맵 -> 변수간 상관관계, Revenue에 영향미치는 변수들 파악
+# 머신러닝 -> 학습/테스트
+# 결론
 
 
 
