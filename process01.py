@@ -46,7 +46,7 @@ print(visitor_type)
 dataset.loc[dataset['VisitorType'] == 'Returning_Visitor', 'VisitorType'] == 0
 
 # 변수 의미 파악
-# 영향력 있는 변수 selecting -> sklean.feature_selection.SelectBest
+# 영향력 있는 변수 selecting -> sklearn.feature_selection.SelectBest
 
 
 
