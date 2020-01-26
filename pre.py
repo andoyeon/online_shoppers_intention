@@ -1,8 +1,17 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.feature_selection import SelectKBest, f_classif
+import matplotlib.pyplot as pl
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import IsolationForest
 
 
+#
 online_shoppers_intention = pd.read_csv('online_shoppers_intention.csv')
 dataset = online_shoppers_intention
 print(dataset.shape)
