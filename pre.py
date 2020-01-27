@@ -1,7 +1,7 @@
+import numpy as np
 import pandas as pd
-import matplotlib.pyplot as pl
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn import metrics
@@ -11,52 +11,160 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import IsolationForest
 
 
-#
+# Importing data set
 online_shoppers_intention = pd.read_csv('online_shoppers_intention.csv')
 dataset = online_shoppers_intention
-print(dataset.shape)
-
-X = dataset.iloc[:, :-1]
-y = dataset.iloc[:, -1:]
-print('X[5] =', X[:5])
-print('y[5] =', y[:5])
-
-# 문자형 데이터 -> 숫자형으로 변환
+print('shape:', dataset.shape)
+m = dataset.shape[0]
 print(dataset.info())
-# Python2 (11) - scratch12 나이브 베이즈(p9)
+print(dataset.head())
+print(dataset.describe())
+features = list(dataset.columns)
+print('features:', features)
 
-month = set(dataset.loc[:, 'Month'])
-print(month)
-# {'Nov', 'Aug', 'Dec', 'Oct', 'Jul', 'June', 'Feb', 'Sep', 'Mar', 'May'}
-dataset.loc[dataset['Month'] == 'Jan', 'Month'] = 0
-dataset.loc[dataset['Month'] == 'Feb', 'Month'] = 1
-dataset.loc[dataset['Month'] == 'Mar', 'Month'] = 2
-dataset.loc[dataset['Month'] == 'Apr', 'Month'] = 3
-dataset.loc[dataset['Month'] == 'May', 'Month'] = 4
-dataset.loc[dataset['Month'] == 'June', 'Month'] = 5
-dataset.loc[dataset['Month'] == 'Jul', 'Month'] = 6
-dataset.loc[dataset['Month'] == 'Aug', 'Month'] = 7
-dataset.loc[dataset['Month'] == 'Sep', 'Month'] = 8
-dataset.loc[dataset['Month'] == 'Oct', 'Month'] = 9
-dataset.loc[dataset['Month'] == 'Nov', 'Month'] = 10
-dataset.loc[dataset['Month'] == 'Dec', 'Month'] = 11
-print(dataset.loc[:, 'Month'])
-
-visitor_type = set(dataset.loc[:, 'VisitorType'])
-print(visitor_type)
-# {'Returning_Visitor', 'Other', 'New_Visitor'}
-dataset.loc[dataset['VisitorType'] == 'Returning_Visitor', 'VisitorType'] = 0
-dataset.loc[dataset['VisitorType'] == 'New_Visitor', 'VisitorType'] = 1
-dataset.loc[dataset['VisitorType'] == 'Other', 'VisitorType'] = 2
-print(dataset.loc[:, 'VisitorType'])
+# Revenue graph
+Revenue = dataset.loc[:, 'Revenue']
 
 
-# selector = SelectKBest(f_classif, k=10)
+# Dividing X and y
+X = dataset.iloc[:, :-1]
+y = dataset.iloc[:, -1]
+print('X =', X[:5])
+print('y =', y[:5])
 
-# 히트맵 -> 변수간 상관관계, Revenue에 영향미치는 변수들 파악
-# 머신러닝 -> 학습/테스트
-# 결론
+# Checking missing data
+dataset.isnull().sum()
 
+# Handling catagorical data
+month_name = set(dataset.loc[:, 'Month'])
+# print('Month:', month_name)
+visitortype = set(dataset.loc[:, 'VisitorType'])
+# print('VisitorType:', visitortype)
 
+# print(list(dataset['Month']))
+month = []
+visitorType = []
+weekend = []
+browser = []
+operatingSystems = []
+for i in features:
+    if i == 'Month':
+        data = list(dataset[i])
+        for j in range(m):
+            if data[j] == 'Jan':
+                month.append([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 'Feb':
+                month.append([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 'Mar':
+                month.append([0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 'Apr':
+                month.append([0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 'May':
+                month.append([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 'June':
+                month.append([0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 'Jul':
+                month.append([0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0])
+            elif data[j] == 'Aug':
+                month.append([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0])
+            elif data[j] == 'Sep':
+                month.append([0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0])
+            elif data[j] == 'Oct':
+                month.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0])
+            elif data[j] == 'Nov':
+                month.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0])
+            elif data[j] == 'Dec':
+                month.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1])
 
+    elif i == 'VisitorType':
+        data = list(dataset[i])
+        for j in range(m):
+            if data[j] == 'New_Visitor':
+                visitorType.append([1, 0, 0])
+            elif data[j] == 'Returning_Visitor':
+                visitorType.append([0, 1, 0])
+            elif data[j] == 'Other':
+                visitorType.append([0, 0, 1])
 
+    elif i == 'Weekend':
+        data = list(dataset[i])
+        for j in range(m):
+            if data[j] == True:
+                weekend.append([1, 0])
+            elif data[j] == False:
+                weekend.append([0, 1])
+
+    elif i == 'Browser':
+        data = list(dataset[i])
+        for j in range(m):
+            if data[j] == 1:
+                browser.append([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 2:
+                browser.append([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 3:
+                browser.append([0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 4:
+                browser.append([0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 5:
+                browser.append([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 6:
+                browser.append([0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 7:
+                browser.append([0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 8:
+                browser.append([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0])
+            elif data[j] == 9:
+                browser.append([0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0])
+            elif data[j] == 10:
+                browser.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0])
+            elif data[j] == 11:
+                browser.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0])
+            elif data[j] == 12:
+                browser.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0])
+            elif data[j] == 13:
+                browser.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1])
+
+    elif i == 'OperatingSystems':
+        data = list(dataset[i])
+        for j in range(m):
+            if data[j] == 1:
+                operatingSystems.append([1, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 2:
+                operatingSystems.append([0, 1, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 3:
+                operatingSystems.append([0, 0, 1, 0, 0, 0, 0, 0])
+            elif data[j] == 4:
+                operatingSystems.append([0, 0, 0, 1, 0, 0, 0, 0])
+            elif data[j] == 5:
+                operatingSystems.append([0, 0, 0, 0, 1, 0, 0, 0])
+            elif data[j] == 6:
+                operatingSystems.append([0, 0, 0, 0, 0, 1, 0, 0])
+            elif data[j] == 7:
+                operatingSystems.append([0, 0, 0, 0, 0, 0, 1, 0])
+            elif data[j] == 8:
+                operatingSystems.append([0, 0, 0, 0, 0, 0, 0, 1])
+
+# print(month[:5])
+# print(weekend[:5])
+# What differ?
+# print(dataset.iloc[:, -1][:5])
+# print(dataset.iloc[:, 17:18][:5])
+
+X_0 = dataset.iloc[:, 0:10].values
+X_1 = dataset.iloc[:, 13:15].values
+y_ = dataset.iloc[:, 17:18].values
+X_ = np.append(X_0, month, axis=1)
+X_ = np.append(X_0, operatingSystems, axis=1)
+X_ = np.append(X_0, browser, axis=1)
+X_ = np.append(X_, X_1, axis=1)
+X_ = np.append(X_, visitorType, axis=1)
+X_ = np.append(X_, weekend, axis=1)
+df = np.append(X_, y_, axis=1)
+print('df shape:', df.shape)
+
+featureNames = ['Administrative', 'Administrative_Duration', 'Informational', 'Informational_Duration',
+                'ProductRelated', 'ProductRelated_Duration', 'BounceRates', 'ExitRates', 'PageValues',
+                'SpecialDay', 'Month1', 'Month2', 'Month3', 'Month4', 'Month5', 'Month6', 'Month7',
+                'Month8', 'Month9', 'Month10', 'Month11', 'Month12', 'OperatingSystems', 'Browser',
+                'Region', 'TrafficType', 'VisitorType1', 'VisitorType2', 'VisitorType3',
+                'Weekend1', 'Weekend2', 'Revenue']
