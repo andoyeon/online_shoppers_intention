@@ -44,7 +44,9 @@ visitortype = set(dataset.loc[:, 'VisitorType'])
 # print('VisitorType:', visitortype)
 
 # print(list(dataset['Month']))
-# print(Counter(dataset['Browser']))
+print(Counter(dataset['Browser']))
+print(Counter(dataset['OperatingSystems']))
+print(Counter(dataset['Region']))
 
 month = []
 visitorType = []
@@ -171,7 +173,7 @@ for i in features:
             elif data[j] == 9:
                 region.append([0, 0, 0, 0, 0, 0, 0, 0, 1])
 
-
+print(dataset.columns)
 # print(month[:5])
 # print(weekend[:5])
 # What differ?
@@ -182,16 +184,16 @@ X_0 = dataset.iloc[:, 0:10].values
 X_1 = dataset.iloc[:, 14:15].values  # traffic type
 y_ = dataset.iloc[:, 17:18].values
 X_ = np.append(X_0, month, axis=1)
-X_ = np.append(X_0, operatingSystems, axis=1)
-X_ = np.append(X_0, browser, axis=1)
-X_ = np.append(X_0, region, axis=1)
+X_ = np.append(X_, operatingSystems, axis=1)
+X_ = np.append(X_, browser, axis=1)
+X_ = np.append(X_, region, axis=1)
 X_ = np.append(X_, X_1, axis=1)
 X_ = np.append(X_, visitorType, axis=1)
 X_ = np.append(X_, weekend, axis=1)
 df = np.append(X_, y_, axis=1)
 print('df shape:', df.shape)
 df = pd.DataFrame(df)
-print(df.describe())
+# print(df.head(10))
 featureNames = ['Administrative', 'Administrative_Duration', 'Informational', 'Informational_Duration',
                 'ProductRelated', 'ProductRelated_Duration', 'BounceRates', 'ExitRates', 'PageValues', 'SpecialDay',
                 'Month1', 'Month2', 'Month3', 'Month4', 'Month5', 'Month6', 'Month7','Month8', 'Month9', 'Month10',
@@ -200,6 +202,5 @@ featureNames = ['Administrative', 'Administrative_Duration', 'Informational', 'I
                 'browser1', 'browser2', 'browser3', 'browser4', 'browser5', 'browser6', 'browser7', 'browser8',
                 'browser9', 'browser10', 'browser11', 'browser12', 'browser13',
                 'region1', 'region2', 'region3', 'region4', 'region5', 'region6', 'region7', 'region8', 'region9',
-                'TrafficType', 'VisitorType1',
-                'VisitorType2', 'VisitorType3', 'Weekend1', 'Weekend2', 'Revenue']
-# df = pd.DataFrame(df, columns=featureNames)
+                'TrafficType', 'VisitorType1', 'VisitorType2', 'VisitorType3', 'Weekend1', 'Weekend2', 'Revenue']
+df = pd.DataFrame(df, columns=featureNames)
