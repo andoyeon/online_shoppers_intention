@@ -1,3 +1,5 @@
+from collections import Counter
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -42,11 +44,14 @@ visitortype = set(dataset.loc[:, 'VisitorType'])
 # print('VisitorType:', visitortype)
 
 # print(list(dataset['Month']))
+# print(Counter(dataset['Browser']))
+
 month = []
 visitorType = []
 weekend = []
 browser = []
 operatingSystems = []
+region = []
 for i in features:
     if i == 'Month':
         data = list(dataset[i])
@@ -89,7 +94,7 @@ for i in features:
     elif i == 'Weekend':
         data = list(dataset[i])
         for j in range(m):
-            if data[j] == True:
+            if data[j]:
                 weekend.append([1, 0])
             elif data[j] == False:
                 weekend.append([0, 1])
@@ -144,6 +149,29 @@ for i in features:
             elif data[j] == 8:
                 operatingSystems.append([0, 0, 0, 0, 0, 0, 0, 1])
 
+    elif i == 'Region':
+        data = list(dataset[i])
+        for j in range(m):
+            if data[j] == 1:
+                region.append([1, 0, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 2:
+                region.append([0, 1, 0, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 3:
+                region.append([0, 0, 1, 0, 0, 0, 0, 0, 0])
+            elif data[j] == 4:
+                region.append([0, 0, 0, 1, 0, 0, 0, 0, 0])
+            elif data[j] == 5:
+                region.append([0, 0, 0, 0, 1, 0, 0, 0, 0])
+            elif data[j] == 6:
+                region.append([0, 0, 0, 0, 0, 1, 0, 0, 0])
+            elif data[j] == 7:
+                region.append([0, 0, 0, 0, 0, 0, 1, 0, 0])
+            elif data[j] == 8:
+                region.append([0, 0, 0, 0, 0, 0, 0, 1, 0])
+            elif data[j] == 9:
+                region.append([0, 0, 0, 0, 0, 0, 0, 0, 1])
+
+
 # print(month[:5])
 # print(weekend[:5])
 # What differ?
@@ -151,20 +179,27 @@ for i in features:
 # print(dataset.iloc[:, 17:18][:5])
 
 X_0 = dataset.iloc[:, 0:10].values
-X_1 = dataset.iloc[:, 13:15].values
+X_1 = dataset.iloc[:, 14:15].values  # traffic type
 y_ = dataset.iloc[:, 17:18].values
 X_ = np.append(X_0, month, axis=1)
 X_ = np.append(X_0, operatingSystems, axis=1)
 X_ = np.append(X_0, browser, axis=1)
+X_ = np.append(X_0, region, axis=1)
 X_ = np.append(X_, X_1, axis=1)
 X_ = np.append(X_, visitorType, axis=1)
 X_ = np.append(X_, weekend, axis=1)
 df = np.append(X_, y_, axis=1)
 print('df shape:', df.shape)
-
+df = pd.DataFrame(df)
+print(df.describe())
 featureNames = ['Administrative', 'Administrative_Duration', 'Informational', 'Informational_Duration',
-                'ProductRelated', 'ProductRelated_Duration', 'BounceRates', 'ExitRates', 'PageValues',
-                'SpecialDay', 'Month1', 'Month2', 'Month3', 'Month4', 'Month5', 'Month6', 'Month7',
-                'Month8', 'Month9', 'Month10', 'Month11', 'Month12', 'OperatingSystems', 'Browser',
-                'Region', 'TrafficType', 'VisitorType1', 'VisitorType2', 'VisitorType3',
-                'Weekend1', 'Weekend2', 'Revenue']
+                'ProductRelated', 'ProductRelated_Duration', 'BounceRates', 'ExitRates', 'PageValues', 'SpecialDay',
+                'Month1', 'Month2', 'Month3', 'Month4', 'Month5', 'Month6', 'Month7','Month8', 'Month9', 'Month10',
+                'Month11', 'Month12',
+                'os1', 'os2', 'os3', 'os4', 'os5', 'os6', 'os7', 'os8',
+                'browser1', 'browser2', 'browser3', 'browser4', 'browser5', 'browser6', 'browser7', 'browser8',
+                'browser9', 'browser10', 'browser11', 'browser12', 'browser13',
+                'region1', 'region2', 'region3', 'region4', 'region5', 'region6', 'region7', 'region8', 'region9',
+                'TrafficType', 'VisitorType1',
+                'VisitorType2', 'VisitorType3', 'Weekend1', 'Weekend2', 'Revenue']
+# df = pd.DataFrame(df, columns=featureNames)
