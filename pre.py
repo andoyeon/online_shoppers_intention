@@ -3,6 +3,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
@@ -204,3 +205,6 @@ featureNames = ['Administrative', 'Administrative_Duration', 'Informational', 'I
                 'region1', 'region2', 'region3', 'region4', 'region5', 'region6', 'region7', 'region8', 'region9',
                 'TrafficType', 'VisitorType1', 'VisitorType2', 'VisitorType3', 'Weekend1', 'Weekend2', 'Revenue']
 df = pd.DataFrame(df, columns=featureNames)
+
+bestfeatures = SelectKBest(score_func=chi2, k=10)
+fit = bestfeatures.fit(X, y)
