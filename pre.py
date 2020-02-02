@@ -215,3 +215,8 @@ print('y =', y[:5])
 
 bestfeatures = SelectKBest(score_func=chi2, k=10)
 fit = bestfeatures.fit(X, y)
+dfscores = pd.DataFrame(fit.scores_)
+dfcolumns = pd.DataFrame(X.columns)
+featureScores = pd.concat([dfcolumns, dfscores], axis=1)
+featureScores.columns = ['Specs', 'Score']
+print(featureScores.nlargest(10, 'Score'))
