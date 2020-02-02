@@ -191,10 +191,10 @@ X_ = np.append(X_, region, axis=1)
 X_ = np.append(X_, X_1, axis=1)
 X_ = np.append(X_, visitorType, axis=1)
 X_ = np.append(X_, weekend, axis=1)
-df = np.append(X_, y_, axis=1)
-print('df shape:', df.shape)
-df = pd.DataFrame(df)
-# print(df.head(10))
+df_ = np.append(X_, y_, axis=1)
+# print('df_ shape:', df_.shape)
+
+
 featureNames = ['Administrative', 'Administrative_Duration', 'Informational', 'Informational_Duration',
                 'ProductRelated', 'ProductRelated_Duration', 'BounceRates', 'ExitRates', 'PageValues', 'SpecialDay',
                 'Month1', 'Month2', 'Month3', 'Month4', 'Month5', 'Month6', 'Month7','Month8', 'Month9', 'Month10',
@@ -204,7 +204,14 @@ featureNames = ['Administrative', 'Administrative_Duration', 'Informational', 'I
                 'browser9', 'browser10', 'browser11', 'browser12', 'browser13',
                 'region1', 'region2', 'region3', 'region4', 'region5', 'region6', 'region7', 'region8', 'region9',
                 'TrafficType', 'VisitorType1', 'VisitorType2', 'VisitorType3', 'Weekend1', 'Weekend2', 'Revenue']
-df = pd.DataFrame(df, columns=featureNames)
+df = pd.DataFrame(df_, columns=featureNames)
+print(df.head(1))
+
+# Dividing X and y
+X = df.iloc[:, :-1]
+y = df.iloc[:, -1]
+print('X =', X[:5])
+print('y =', y[:5])
 
 bestfeatures = SelectKBest(score_func=chi2, k=10)
 fit = bestfeatures.fit(X, y)
